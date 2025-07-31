@@ -10778,6 +10778,7 @@ if test "X$OSTYPE" = "Xmsys" ; then
 if test "X$ETCL" = "Xyes" ; then
 if test "X$OSTYPE" = "Xcygwin" ; then
 # skip Tcl_CreateInterp check on cygwin...
+	MINGW_LDADD="-lcomdlg32"
 	if test "X$STUBIFY" = "Xyes" ; then
 	TCL_DEFADD="-DHAVE_LIBTCL -DWAVE_TCL_STUBIFY -DUSE_TCL_STUBS -DUSE_TK_STUBS"
 	TCL_LDADD="${TCL_STUB_LIB_SPEC}"
