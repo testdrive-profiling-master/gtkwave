@@ -20,6 +20,13 @@
 #define WAVE_MONOSPACE_6  "Monaco 10"
 #define WAVE_SANS_12      "Sans 22"
 #define WAVE_SANS_10      "Sans 16"
+#elif _WIN32
+#define WAVE_MONOSPACE_12 "Cascadia Mono 12"
+#define WAVE_MONOSPACE_10 "Cascadia Mono 10"
+#define WAVE_MONOSPACE_8  "Cascadia Mono 8"
+#define WAVE_MONOSPACE_6  "Cascadia Mono 6"
+#define WAVE_SANS_12      "Cascadia Mono 12"
+#define WAVE_SANS_10      "Cascadia Mono 10"
 #else
 #define WAVE_MONOSPACE_12 "Monospace 12"
 #define WAVE_MONOSPACE_10 "Monospace 10"

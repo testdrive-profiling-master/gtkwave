@@ -443,6 +443,11 @@ gtkwave_SOURCES = \
 	vcd_partial.c vcd_recoder.c vcd_saver.c vcd_saver.h version.h vlist.c vlist.h vzt.c vzt.h wavealloca.h \
 	wavewindow.c zoombuttons.c
 
+gtkwave_WINRES = resource.rc
+ifeq ($(OS),Windows_NT)
+gtkwave_OBJECTS += resource.rc.o
+endif
+
 gtkwave_LDADD = $(LIBCOCOA_LDADD) $(GTK_LIBS) $(LIBLZMA_LDADD) $(LIBZ_LDADD) $(LIBBZ2_LDADD) $(LIBFST_LDADD) $(AET2_LDADD) $(TCL_LDADD) $(TK_LDADD) $(FSDB_LDADD) $(LIBJUDY_LDADD) $(GTK_MAC_LIBS) $(GCONF_LIBS) $(GTK_UNIX_PRINT_LIBS) $(MINGW_LDADD)
 gtkwave_LDFLAGS = $(COCOA_GTK_LDFLAGS)
 twinwave_SOURCES = twinwave.c
@@ -680,6 +685,9 @@ vzt_read.obj: helpers/vzt_read.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='helpers/vzt_read.c' object='vzt_read.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o vzt_read.obj `if test -f 'helpers/vzt_read.c'; then $(CYGPATH_W) 'helpers/vzt_read.c'; else $(CYGPATH_W) '$(srcdir)/helpers/vzt_read.c'; fi`
+
+resource.rc.o: resource.rc
+	windres resource.rc -o resource.rc.o
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
