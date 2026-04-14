@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Tony Bybell 2009-2017.
+ * Copyright (c) Tony Bybell 2009-2026.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -358,6 +358,14 @@ for(;;)
 				GLOBALS->extload_idcodes[i] = d2;
 				if(GLOBALS->extload_inv_idcodes[d2] == 0) GLOBALS->extload_inv_idcodes[d2] = i+1; /* root alias */
 
+				if(!strcmp("vcd_string", typ))
+					{
+					GLOBALS->mvlfacs_vzt_c_3[i].flags = VZT_RD_SYM_F_DOUBLE;
+					GLOBALS->extload_node_block[i].msi=0;
+					GLOBALS->extload_node_block[i].lsi=0;
+					GLOBALS->mvlfacs_vzt_c_3[i].len=2;
+					}
+				else
 				if(!strcmp("vcd_real", typ))
 					{
 					GLOBALS->mvlfacs_vzt_c_3[i].flags = VZT_RD_SYM_F_DOUBLE;
@@ -1047,6 +1055,14 @@ static char zbuf[65537]; /* OK as this does not need to be re-entrant */
 				GLOBALS->extload_idcodes[i] = d2;
 				if(GLOBALS->extload_inv_idcodes[d2] == 0) GLOBALS->extload_inv_idcodes[d2] = i+1; /* root alias */
 
+				if(fh->u.var.typ == FST_VT_GEN_STRING)
+					{
+					GLOBALS->mvlfacs_vzt_c_3[i].flags = VZT_RD_SYM_F_STRING;
+					GLOBALS->extload_node_block[i].msi=0;
+					GLOBALS->extload_node_block[i].lsi=0;
+					GLOBALS->mvlfacs_vzt_c_3[i].len=2;
+					}
+				else
 				if(fh->u.var.typ == FST_VT_VCD_REAL)
 					{
 					GLOBALS->mvlfacs_vzt_c_3[i].flags = VZT_RD_SYM_F_DOUBLE;
@@ -1222,6 +1238,7 @@ static char zbuf[65537]; /* OK as this does not need to be re-entrant */
 				case FST_ST_VHDL_FOR_GENERATE: ttype = TREE_VHDL_ST_GENFOR; break;
 				case FST_ST_VHDL_PROCEDURE: ttype = TREE_VHDL_ST_PROCEDURE; break;
 				case FST_ST_VHDL_PROCESS: ttype = TREE_VHDL_ST_PROCESS; break;
+				case FST_ST_SV_ARRAY: ttype = TREE_SV_ST_ARRAY; break;
 				default: ttype = TREE_UNKNOWN; break;
 				}
 

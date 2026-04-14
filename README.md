@@ -1,4 +1,4 @@
-# GTKWave
+# GTKWave for TestDrive Profiling Master
 
 ## Installation
 

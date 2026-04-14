@@ -626,12 +626,12 @@ NULL, /* filesel_tim_writesave */
 0, /* lock_menu_c_2 252 */
 NULL, /* buf_menu_c_1 253 128 */
 NULL, /* signal_popup_menu */
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 NULL, /* header_bar */
 NULL, /* main_popup_menu */
 NULL, /* main_popup_menu_button */
 NULL, /* top_table */
-#endif
+// #endif
 NULL, /* sst_signal_popup_menu */
 
 /*
@@ -679,6 +679,7 @@ NULL, /* hiericon_task_pixbuf */
 NULL, /* hiericon_function_pixbuf */
 NULL, /* hiericon_begin_pixbuf */
 NULL, /* hiericon_fork_pixbuf */
+NULL, /* hiericon_sv_array_pixbuf */
 NULL, /* hiericon_interface_pixbuf */
 NULL, /* hiericon_svpackage_pixbuf */
 NULL, /* hiericon_program_pixbuf */
@@ -1076,6 +1077,7 @@ NULL, /* vcd_jmp_buf */
 -1, /* vcd_warning_filesize 472 */
 1, /* autocoalesce 473 */
 0, /* autocoalesce_reversal */
+0, /* mti_realparam_fix */
 -1, /* vcd_explicit_zero_subscripts 474 */
 0, /* convert_to_reals 475 */
 1, /* atomic_vectors 476 */
@@ -1837,6 +1839,7 @@ void reload_into_new_context_2(void)
  new_globals->autoname_bundles = GLOBALS->autoname_bundles;
  new_globals->autocoalesce = GLOBALS->autocoalesce;
  new_globals->autocoalesce_reversal = GLOBALS->autocoalesce_reversal;
+ new_globals->mti_realparam_fix = GLOBALS->mti_realparam_fix;
  new_globals->constant_marker_update = GLOBALS->constant_marker_update;
  new_globals->convert_to_reals = GLOBALS->convert_to_reals;
  new_globals->disable_mouseover = GLOBALS->disable_mouseover;
@@ -1954,12 +1957,12 @@ void reload_into_new_context_2(void)
  strcpy2_into_new_context(new_globals, &new_globals->filesel_writesave, &GLOBALS->filesel_writesave);
  new_globals->save_success_menu_c_1 = GLOBALS->save_success_menu_c_1;
  new_globals->signal_popup_menu = GLOBALS->signal_popup_menu;
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
  new_globals->main_popup_menu = GLOBALS->main_popup_menu;
  new_globals->main_popup_menu_button = GLOBALS->main_popup_menu_button;
  new_globals->header_bar = GLOBALS->header_bar;
  new_globals->top_table = GLOBALS->top_table;
-#endif
+// #endif
  new_globals->sst_signal_popup_menu = GLOBALS->sst_signal_popup_menu;
 
  strcpy2_into_new_context(new_globals, &new_globals->filesel_vcd_writesave, &GLOBALS->filesel_vcd_writesave);
@@ -2331,7 +2334,7 @@ void reload_into_new_context_2(void)
 		else
 		{
 		/* recovery sequence */
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
         	if(GLOBALS->header_bar)
                 	{
 			char recbuf[128];
@@ -2341,9 +2344,9 @@ void reload_into_new_context_2(void)
 			}
 #endif
 		set_window_busy(NULL);
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 		if(!GLOBALS->header_bar)
-#endif
+// #endif
 			{
 			printf("GTKWAVE | Reload failure, reattempt in %d second%s...\n", reload_fail_delay, (reload_fail_delay==1) ? "" : "s");
 			fflush(stdout);
@@ -2821,6 +2824,7 @@ switch(type)
 							GLOBALS->lxt_clock_compress_to_z = g_old->lxt_clock_compress_to_z;
 							GLOBALS->autoname_bundles = g_old->autoname_bundles;
 							GLOBALS->autocoalesce_reversal = g_old->autocoalesce_reversal;
+							GLOBALS->mti_realparam_fix = g_old->mti_realparam_fix;
 							GLOBALS->autocoalesce = g_old->autocoalesce;
 							GLOBALS->hier_grouping = g_old->hier_grouping;
 							GLOBALS->wave_scrolling = g_old->wave_scrolling;
@@ -2986,6 +2990,7 @@ void clone_icon_pointers_across_contexts(struct Global *a, struct Global *b)
  a->hiericon_function_pixbuf = b->hiericon_function_pixbuf;
  a->hiericon_begin_pixbuf = b->hiericon_begin_pixbuf;
  a->hiericon_fork_pixbuf = b->hiericon_fork_pixbuf;
+ a->hiericon_sv_array_pixbuf = b->hiericon_sv_array_pixbuf;
  a->hiericon_interface_pixbuf = b->hiericon_interface_pixbuf;
  a->hiericon_svpackage_pixbuf = b->hiericon_svpackage_pixbuf;
  a->hiericon_program_pixbuf = b->hiericon_program_pixbuf;

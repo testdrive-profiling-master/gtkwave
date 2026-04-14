@@ -34,6 +34,53 @@
   <content_rating type="oars-1.0" />
 
   <releases>
+    <release version="3.3.127" date="2026-03-31">
+      <description>
+        <p>
+	Changes in 3.3.127:
+        </p>
+	<ul>
+            <li>Fix for fixed point shift that does not disable it on the specify value change menu option.</li>
+            <li>Changed ps2pdf to pstopdf on Mac as ps removed by Sonoma.</li>
+            <li>Warnings fix in vcd2fst for missing string.h include.</li>
+            <li>Added FST_ST_SV_ARRAY (FST) and "sv_array" (VCD) for arrays (gtkwave/libfst#17).</li>
+            <li>Wrote replacement for gdk_pixbuf_new_from_xpm_data.</li>
+            <li>Update FSDB to handle FST_ST_SV_ARRAY (VCS emits this), FSDB_ST_SV_INTERFACEPORT_REF, and FSDB_VT_STRING.</li>
+            <li>Added "SV_ST_ARRAY" to exclude file parsing on init.</li>
+            <li>Fix use after free of GLOBALS->entrybox_text in regexp_highlight_generic().</li>
+        </ul>
+      </description>
+    </release>
+
+    <release version="3.3.126" date="2025-12-18">
+      <description>
+        <p>
+	Changes in 3.3.126:
+        </p>
+	<ul>
+            <li>Added -H --noheader command line option for GTK3.</li>
+            <li>Fix for	rendering multiline string constants in dumps.</li>
+            <li>Add warning message for missing XPM loader.</li>
+            <li>Updated	libghw to current version.</li>
+            <li>Changed behavior of X search in pattern search so it is matched by a single X bit.</li>
+        </ul>
+      </description>
+    </release>
+
+    <release version="3.3.125" date="2025-06-22">
+      <description>
+        <p>
+	Changes in 3.3.125:
+        </p>
+	<ul>
+            <li>Added json2stems to distribution to support newer versions of Verilator.</li>
+            <li>VCD parser fix for colon in VCD variable name (Jasper).</li>
+            <li>Parameter size 0 fix for Vivado: conditionally backs out very old fix (for MTI) that converts 0 size signals to reals.</li>
+            <li>Update vcd2fst so it handles MTI 0 size conversion.</li>
+        </ul>
+      </description>
+    </release>
+
     <release version="3.3.124" date="2025-05-07">
       <description>
         <p>

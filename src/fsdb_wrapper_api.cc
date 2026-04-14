@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Tony Bybell 2013-2017.
+ * Copyright (c) Tony Bybell 2013-2026.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -256,7 +256,7 @@ byte_T *vc_ptr = (byte_T *)val_ptr;
 static byte_T buffer[FSDB_MAX_BIT_SIZE+1];
 uint_T i;
 fsdbVarType   var_type; 
-    
+
 switch (vc_trvs_hdl->ffrGetBytesPerBit()) 
 	{
 	case FSDB_BYTES_PER_BIT_1B:
@@ -337,6 +337,11 @@ switch (vc_trvs_hdl->ffrGetBytesPerBit())
 			case FSDB_VT_VCD_MEMORY_DEPTH:
 			case FSDB_VT_VHDL_MEMORY_DEPTH:
 				buffer[0] = 0;
+				break;
+
+			case FSDB_VT_STRING:
+				vc_trvs_hdl->ffrGetVC(&vc_ptr);
+				strcpy((char *)buffer, (char *)vc_ptr);
 				break;
 	               
 			default:    
@@ -473,6 +478,7 @@ switch (scope->type)
 		break;
 
 	case FSDB_ST_SV_INTERFACE:
+	case FSDB_ST_SV_INTERFACEPORT_REF:
 		type = (str_T) "sv_interface"; 
 		break;
 
@@ -715,6 +721,11 @@ switch (var->type)
 		typelen = 6;
 		break;
 
+    	case FSDB_VT_STRING:
+		type = (str_T) "vcd_string"; 
+		typelen = 10;
+		break;
+
     	default:
 		type = (str_T) "vcd_wire";
 		typelen = 8;
@@ -937,6 +948,7 @@ switch (scope->type)
 		break;
 
 	case FSDB_ST_SV_INTERFACE:
+	case FSDB_ST_SV_INTERFACEPORT_REF:
 		typ = FST_ST_VCD_INTERFACE; 
 		break;
 
@@ -1117,6 +1129,7 @@ switch (var->type)
 		break;
 
 	case FSDB_VT_STREAM: /* these hold transactions: not yet supported */
+	case FSDB_VT_STRING: /* this needs actual work */
 		typ = FST_VT_GEN_STRING;
 		break;
 
@@ -1173,6 +1186,16 @@ static void
 __DumpArray2(fsdbTreeCBDataArrayBegin* arr, void (*cb)(void *))
 {
 /* printf("NAME: %s SIZE: %d is_partial_dumped: %d\n", arr->name, (int)arr->size, (int)arr->is_partial_dumped); */
+struct fstHier fh;
+
+fh.htyp = FST_HT_SCOPE;
+fh.u.scope.typ = FST_ST_SV_ARRAY;
+fh.u.scope.name = arr->name;
+fh.u.scope.name_length = strlen(fh.u.scope.name);
+fh.u.scope.component = NULL;
+fh.u.scope.component_length = 0;
+
+cb(&fh);
 }
 
 
@@ -1182,10 +1205,6 @@ static bool_T __MyTreeCB2(fsdbTreeCBType cb_type,
 {
 void (*cb)(void *) = (void (*)(void *))client_data;
 struct fstHier fh;
-
-
-
-char bf[16];
 
 switch (cb_type) 
 	{
@@ -1203,6 +1222,7 @@ switch (cb_type)
 
     	case FSDB_TREE_CBT_UPSCOPE:
 	case FSDB_TREE_CBT_STRUCT_END:
+    	case FSDB_TREE_CBT_ARRAY_END:
 		fh.htyp = FST_HT_UPSCOPE;
 		cb(&fh);
 		break;
@@ -1216,11 +1236,8 @@ switch (cb_type)
 		__DumpStruct2((fsdbTreeCBDataStructBegin*)tree_cb_data, cb);
 		break;
 
-	/* not yet supported */
     	case FSDB_TREE_CBT_ARRAY_BEGIN:
 		__DumpArray2((fsdbTreeCBDataArrayBegin*)tree_cb_data, cb);
-		break;
-    	case FSDB_TREE_CBT_ARRAY_END:
 		break;
 
     	case FSDB_TREE_CBT_FILE_TYPE:

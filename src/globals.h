@@ -655,12 +655,12 @@ int lock_menu_c_1; /* from menu.c 268 */
 int lock_menu_c_2; /* from menu.c 269 */
 char *buf_menu_c_1; /* from menu.c 270 */
 GtkWidget *signal_popup_menu; /* from menu.c */
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 GtkWidget *header_bar;
 GtkWidget *main_popup_menu; /* from menu.c */
 GtkWidget *main_popup_menu_button; /* from menu.c */
 GtkWidget *top_table;
-#endif
+// #endif
 GtkWidget *sst_signal_popup_menu; /* from menu.c */
 
 
@@ -708,6 +708,7 @@ GdkPixbuf *hiericon_task_pixbuf; /* from pixmaps.c */
 GdkPixbuf *hiericon_function_pixbuf; /* from pixmaps.c */
 GdkPixbuf *hiericon_begin_pixbuf; /* from pixmaps.c */
 GdkPixbuf *hiericon_fork_pixbuf; /* from pixmaps.c */
+GdkPixbuf *hiericon_sv_array_pixbuf; /* from pixmaps.c */
 GdkPixbuf *hiericon_interface_pixbuf;
 GdkPixbuf *hiericon_svpackage_pixbuf;
 GdkPixbuf *hiericon_program_pixbuf;
@@ -1099,6 +1100,7 @@ jmp_buf *vcd_jmp_buf; /* from vcd.c */
 int vcd_warning_filesize; /* from vcd.c 502 */
 char autocoalesce; /* from vcd.c 503 */
 char autocoalesce_reversal; /* from vcd.c 504 */
+char mti_realparam_fix; 
 int vcd_explicit_zero_subscripts; /* from vcd.c 505 */
 char convert_to_reals; /* from vcd.c 506 */
 char atomic_vectors; /* from vcd.c 507 */

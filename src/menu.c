@@ -3707,9 +3707,14 @@ menu_new_viewer_tab_cleanup_2(char *fname, int optimize_vcd)
 			{
                         if(g_old->missing_file_toolbar) 
 				{
-#ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+if(!RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+				{
 				gtk_widget_set_sensitive(g_old->missing_file_toolbar, TRUE);
-#else
+				}
+else
+// #else
+				{
 	                        GList *chld = gtk_container_get_children (GTK_CONTAINER(GLOBALS->missing_file_toolbar));
 	                        GList *p = chld;
 	                        while(p)
@@ -3719,7 +3724,8 @@ menu_new_viewer_tab_cleanup_2(char *fname, int optimize_vcd)
 	                                p = p->next;
 	                                }
 	                        g_list_free(chld);
-#endif
+				}
+// #endif
 				}
 			menu_set_sensitive();
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(g_old->notebook), g_old->this_context_page);
@@ -4534,7 +4540,7 @@ if(GLOBALS->entrybox_text)
 
 	strcpy(GLOBALS->regexp_string_menu_c_1, GLOBALS->entrybox_text);
 	wave_regex_compile(GLOBALS->regexp_string_menu_c_1, WAVE_REGEX_SEARCH);
-	free_2(GLOBALS->entrybox_text);
+	free_2(GLOBALS->entrybox_text); GLOBALS->entrybox_text = NULL;
 	t=GLOBALS->traces.first;
 	while(t)
 		{
@@ -6679,7 +6685,8 @@ if(GLOBALS->helpbox_is_active)
 
 entrybox("Fixed Point Shift Specify",300,"",NULL,128,G_CALLBACK(menu_dataformat_fpshift_specify_cleanup));
 
-dataformat( ~(TR_FPDECSHIFT), 0 );
+/* not necessary as menu_dataformat_fpshift_specify_cleanup() has dataformat-like code in it that also handles the error case which this doesn't */
+/* dataformat( ~(TR_FPDECSHIFT), TR_FPDECSHIFT ); */
 }
 
 void
@@ -7451,21 +7458,27 @@ if(GLOBALS->helpbox_is_active)
 	if(GLOBALS->fullscreen)
 		{
 		gtk_window_fullscreen (GTK_WINDOW(GLOBALS->mainwindow));
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+		{
 		if(!GLOBALS->socket_xid)
 			{
 			gtk_widget_show(GLOBALS->time_mainbox);
 			}
-#endif
+		}
+// #endif
 		}
 		else
 		{
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+		{
 		if(!GLOBALS->socket_xid)
 			{
 			gtk_widget_hide(GLOBALS->time_mainbox);
 			}
-#endif
+		}
+// #endif
 		gtk_window_unfullscreen (GTK_WINDOW(GLOBALS->mainwindow));
 		}
 
@@ -7490,9 +7503,10 @@ menu_fullscreen(NULL, 0, NULL);
 }
 
 /**/
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 void menu_toolbar(gpointer null_data, guint callback_action, GtkWidget *widget)
 {
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
 (void)null_data;
 (void)callback_action;
 (void)widget;
@@ -7523,8 +7537,9 @@ if(GLOBALS->helpbox_is_active)
 		}
 	DEBUG(printf("Show Toolbar\n"));
 	}
-}
 #endif
+}
+// #endif
 /**/
 void menu_show_grid(gpointer null_data, guint callback_action, GtkWidget *widget)
 {
@@ -7939,7 +7954,7 @@ static gtkwave_mlist_t menu_items[] =
     WAVE_GTKIFE("/Markers/Locking/Unlock from Named Marker", "O", unlock_marker, WV_MENU_MLKOFF, "<Item>"),
 
     WAVE_GTKIFE("/View/Fullscreen", "F11", menu_fullscreen, WV_MENU_FULLSCR, "<ToggleItem>"),
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
     WAVE_GTKIFE("/View/Show Toolbar", "F9", menu_toolbar, WV_MENU_TOOLBAR, "<ToggleItem>"),
 #endif
     WAVE_GTKIFE("/View/<separator>", NULL, NULL, WV_MENU_SEP8C, "<Separator>"),
@@ -8047,9 +8062,14 @@ GLOBALS->quiet_checkmenu = 1;
 
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_VZPS]), GLOBALS->zoom_pow10_snap);
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_FULLSCR]), GLOBALS->fullscreen);
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+{
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_TOOLBAR]), GLOBALS->show_toolbar);
+}
 #endif
+// #endif
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_VSG]), GLOBALS->display_grid);
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_SHW]), GLOBALS->highlight_wavewindow);
 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menu_wlist[WV_MENU_FILL1]), GLOBALS->fill_waveform);
@@ -8838,11 +8858,12 @@ GtkWidget *mw;
 menu_wlist = calloc(nmenu_items, sizeof(GtkWidget *)); /* calloc, not calloc_2() */
 
 menubar = alt_menu(mi, nmenu_items, menu_wlist, global_accel, 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
-	FALSE
-#else
-	TRUE
-#endif
+       RC_WAVE_ALLOW_GTK3_HEADER_BAR ? FALSE : TRUE
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// 	FALSE
+// #else
+// 	TRUE
+// #endif
 	);
 
 GLOBALS->regexp_string_menu_c_1 = calloc_2(1, 129);
@@ -9014,7 +9035,7 @@ if(GLOBALS->loaded_file_type != MISSING_FILE)
 }
 
 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 void do_popup_main_menu (GtkWidget *my_widget, GdkEventButton *event)
 {
 (void)my_widget;
@@ -9063,4 +9084,4 @@ if(GLOBALS->main_popup_menu_button)
                   button, event_time);
 #endif
 }
-#endif
+// #endif

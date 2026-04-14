@@ -1940,3 +1940,28 @@
 		Dump all bits for a bitblasted vector in VCD saver in order
 		to ensure stray bit extractions do not cause a failure to
 		reconstruct vectors in proper order in the extracted file.
+3.3.125 22jun25	Added json2stems to distribution to support newer versions
+		of Verilator.
+		VCD parser fix for colon in VCD variable name (Jasper).
+		Parameter size 0 fix for Vivado: backs out very old fix
+		(for MTI) that converts 0 size signals to reals.
+		Update vcd2fst so it handles MTI 0 size conversion.
+3.3.126 18dec25	Added -H --noheader command line option for GTK3.
+		Fix for rendering multiline string constants in dumps.
+		Added headerbar rc variable to disable GTK3 headerbars.
+		Add warning message for missing XPM loader.
+		Updated	libghw to current version.
+		Changed behavior of X search in pattern search so it is
+		matched by a single X bit.
+3.3.127 31mar26	Fix for fixed point shift that does not disable it on
+		the specify value change menu option.
+		Changed ps2pdf to pstopdf on Mac as ps removed by Sonoma.
+		Warnings fix in	vcd2fst	for missing string.h include.
+		Added FST_ST_SV_ARRAY (FST) and "sv_array" (VCD) for 
+		arrays (gtkwave/libfst#17).
+		Wrote replacement for gdk_pixbuf_new_from_xpm_data.
+		Update FSDB to handle FST_ST_SV_ARRAY (VCS emits this),
+		FSDB_ST_SV_INTERFACEPORT_REF, and FSDB_VT_STRING.
+		Added "SV_ST_ARRAY" to exclude file parsing on init.
+                Fix use after free of GLOBALS->entrybox_text in
+                regexp_highlight_generic().

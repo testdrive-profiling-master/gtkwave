@@ -860,6 +860,8 @@ text[0]=tmp;
 			case TREE_VHDL_ST_RECORD:	pxb = GLOBALS->hiericon_record_pixbuf; break;
 			case TREE_VHDL_ST_GENERATE:	pxb = GLOBALS->hiericon_generate_pixbuf; break;
 
+                        case TREE_SV_ST_ARRAY:          pxb = GLOBALS->hiericon_sv_array_pixbuf; break; /* new VCD add for artificial hierarchy */
+
 			default:			pxb = NULL; break;
 			}
 
@@ -1073,6 +1075,8 @@ if(GLOBALS->sst_exclude_filename)
 							else if(!strcmp(p, "VHDL_ST_RECORD")) { exclhier |= exclone << TREE_VHDL_ST_RECORD; }
 							else if(!strcmp(p, "VHDL_ST_PROCESS")) { exclhier |= exclone << TREE_VHDL_ST_PROCESS; }
 							else if(!strcmp(p, "VHDL_ST_GENERATE")) { exclhier |= exclone << TREE_VHDL_ST_GENERATE; }
+
+							else if(!strcmp(p, "SV_ST_ARRAY")) { exclhier |= exclone << TREE_SV_ST_ARRAY; }
 							break;
 
 						case SST_EXCL_COMP:

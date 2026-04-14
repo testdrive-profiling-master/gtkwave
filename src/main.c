@@ -85,6 +85,12 @@
 
 char *gtkwave_argv0_cached = NULL;
 
+int RC_WAVE_ALLOW_GTK3_HEADER_BAR =
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
+    1;
+#else
+    0;
+#endif
 
 static void switch_page(GtkNotebook     *notebook,
 			gpointer        *page,
@@ -102,6 +108,7 @@ set_GLOBALS((*GLOBALS->contexts)[page_num]);
 
 GLOBALS->lxt_clock_compress_to_z = g_old->lxt_clock_compress_to_z;
 GLOBALS->autoname_bundles = g_old->autoname_bundles;
+GLOBALS->mti_realparam_fix = g_old->mti_realparam_fix;
 GLOBALS->autocoalesce_reversal = g_old->autocoalesce_reversal;
 GLOBALS->autocoalesce = g_old->autocoalesce;
 GLOBALS->hier_grouping = g_old->hier_grouping;
@@ -135,12 +142,12 @@ GLOBALS->use_gestures = g_old->use_gestures;
 GLOBALS->use_dark = g_old->use_dark;
 GLOBALS->save_on_exit = g_old->save_on_exit;
 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 GLOBALS->header_bar = g_old->header_bar;
 GLOBALS->main_popup_menu = g_old->main_popup_menu;
 GLOBALS->main_popup_menu_button = g_old->main_popup_menu_button;
 GLOBALS->top_table = g_old->top_table;
-#endif
+// #endif
 
 reformat_time(timestr, GLOBALS->tims.first + GLOBALS->global_time_offset, GLOBALS->time_dimension);
 gtk_entry_set_text(GTK_ENTRY(GLOBALS->from_entry),timestr);
@@ -247,7 +254,7 @@ for(i=0;i<GLOBALS->num_notebook_pages;i++)
 #endif
 
 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 static void service_pan_up(GtkWidget *text, gpointer data)
 {
 (void)text;
@@ -283,12 +290,15 @@ if(GLOBALS->helpbox_is_active)
 
 gtk_widget_show(GLOBALS->top_table);
 }
-#endif
+// #endif
 
 
 void wave_gtk_window_set_title(GtkWindow *window, const gchar *title, int typ, int pct)
 {
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR) 
+{
 if(!window || !title || GLOBALS->socket_xid) return;
 
 if(!GLOBALS->disable_menus)
@@ -358,8 +368,10 @@ if(!GLOBALS->disable_menus)
 			}
 		}
 	}
+}
 else
 #endif
+// #endif
 if(window && title)
 	{
 	switch(typ)
@@ -493,6 +505,9 @@ STEMS_GETOPT
 WAVE_GETOPT_CPUS
 "  -N, --nowm                 disable window manager for most windows\n"
 "  -M, --nomenus              do not render menubar (for making applets)\n"
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
+"  -H, --noheader             do not use headerbar/hamburger menus\n"
+#endif
 "  -S, --script=FILE          specify Tcl command script file for execution\n"
 REPSCRIPT_GETOPT
 XID_GETOPT
@@ -800,6 +815,7 @@ if(!GLOBALS)
 	GLOBALS->autoname_bundles = old_g->autoname_bundles;
 	GLOBALS->autocoalesce = old_g->autocoalesce;
 	GLOBALS->autocoalesce_reversal = old_g->autocoalesce_reversal;
+	GLOBALS->mti_realparam_fix = old_g->mti_realparam_fix;
 	GLOBALS->constant_marker_update = old_g->constant_marker_update;
 	GLOBALS->convert_to_reals = old_g->convert_to_reals;
 	GLOBALS->disable_mouseover = old_g->disable_mouseover;
@@ -901,12 +917,12 @@ if(!GLOBALS)
 	GLOBALS->cr_line_width = old_g->cr_line_width;
 	GLOBALS->cairo_050_offset = old_g->cairo_050_offset;
 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
 	GLOBALS->header_bar = old_g->header_bar;
 	GLOBALS->main_popup_menu = old_g->main_popup_menu;
 	GLOBALS->main_popup_menu_button = old_g->main_popup_menu_button;
 	GLOBALS->top_table = old_g->top_table;
-#endif
+// #endif
 
         strcpy2_into_new_context(GLOBALS, &GLOBALS->sst_exclude_filename, &old_g->sst_exclude_filename);
 
@@ -1037,10 +1053,11 @@ while (1)
 		{"sstexclude", 1, 0, '5'},
 		{"dark", 0, 0, '6'},
 		{"saveonexit", 0, 0, '7'},
+                {"noheader", 0, 0, 'H'},
                 {0, 0, 0, 0}
                 };
 
-        c = getopt_long (argc, argv, "zf:Fon:a:Ar:dl:s:e:c:t:NS:vVhxX:MD:IgCLR:P:O:WT:1:2:34:5:67", long_options, &option_index);
+        c = getopt_long (argc, argv, "zf:Fon:a:Ar:dl:s:e:c:t:NS:vVhxX:MD:IgCLR:P:O:WT:1:2:34:5:67H", long_options, &option_index);
 
         if (c == -1) break;     /* no more args */
 
@@ -1263,6 +1280,10 @@ while (1)
 
 		case '7':
 			GLOBALS->save_on_exit = TRUE;
+			break;
+
+		case 'H':
+			RC_WAVE_ALLOW_GTK3_HEADER_BAR = 0;
 			break;
 
                 case 's':
@@ -1584,6 +1605,29 @@ if(output_name)
 
 fprintf(stderr, "\n%s\n\n",WAVE_VERSION_INFO);
 
+#if 0
+if(!mainwindow_already_built) {
+  gboolean has_xpm_loader = FALSE;
+
+  GSList *formats = gdk_pixbuf_get_formats();
+  GSList *iter;
+  for (iter = formats; iter != NULL; iter = iter->next) {
+      GdkPixbufFormat *format = iter->data;
+      char *name = gdk_pixbuf_format_get_name(format);
+
+      if (strcmp(name, "xpm") == 0) {
+          has_xpm_loader = TRUE;
+      }
+
+      g_free(name);
+  }
+  g_slist_free(formats);
+
+  if (!has_xpm_loader) {
+      fprintf(stderr, "GTKWAVE | GdkPixbuf loader for XPM images is not installed.\n");
+  }
+}
+#endif
 
 if(!old_g) /* copy all variables earlier when old_g is set */
 	{
@@ -2121,9 +2165,12 @@ if(GLOBALS->use_toolbutton_interface)
 #endif
 
 			menubar = alt_menu_top(GLOBALS->mainwindow);
-#ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+if(!RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+			{
 			gtk_widget_show(menubar);
-#endif
+			}
+// #endif
 
 #ifdef MAC_INTEGRATION
 {
@@ -2155,7 +2202,10 @@ g_signal_connect(theApp, "NSApplicationBlockTermination", G_CALLBACK(deal_with_t
 #endif
 				{
 #ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+if(!RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+				{
 				gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, TRUE, 0);
+				}
 #endif
 				}
 			}
@@ -2177,7 +2227,9 @@ g_signal_connect(theApp, "NSApplicationBlockTermination", G_CALLBACK(deal_with_t
 			}
 #endif
 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+#ifdef XXX_WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+		{
 		GLOBALS->main_popup_menu_button = stock = XXX_gtk_toolbar_insert_stock(GTK_TOOLBAR(tb),
 	                                         "open-menu-symbolic",
 						 "Menu",
@@ -2186,6 +2238,7 @@ g_signal_connect(theApp, "NSApplicationBlockTermination", G_CALLBACK(deal_with_t
 						 NULL,
 						 tb_pos++);
 		gtk_widget_show(stock);
+		}
 #endif
 
 		stock = XXX_gtk_toolbar_insert_stock(GTK_TOOLBAR(tb),
@@ -2388,9 +2441,14 @@ g_signal_connect(theApp, "NSApplicationBlockTermination", G_CALLBACK(deal_with_t
 		GLOBALS->missing_file_toolbar = tb;
 		if(GLOBALS->loaded_file_type == MISSING_FILE)
 			{
-#ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifndef WAVE_ALLOW_GTK3_HEADER_BAR
+if(!RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+			{
 			gtk_widget_set_sensitive(GLOBALS->missing_file_toolbar, FALSE);
-#else
+			}
+else
+// #else
+			{
 			GList *chld = gtk_container_get_children (GTK_CONTAINER(GLOBALS->missing_file_toolbar));
 			GList *p = chld;
                         while(p)
@@ -2400,7 +2458,8 @@ g_signal_connect(theApp, "NSApplicationBlockTermination", G_CALLBACK(deal_with_t
                                 p = p->next;
                                 }
 			g_list_free(chld);
-#endif
+			}
+// #endif
 			}
 		} /* of ...if(mainwindow_already_built) */
 	}
@@ -2693,9 +2752,12 @@ if(GLOBALS->treeopen_chain_head)
 if(!mainwindow_already_built)
 	{
 	gtk_widget_show(top_table); 
-#ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+// #ifdef WAVE_ALLOW_GTK3_HEADER_BAR
+if(RC_WAVE_ALLOW_GTK3_HEADER_BAR)
+	{
 	GLOBALS->top_table = top_table;
-#endif
+	}
+// #endif
 
 #if GTK_CHECK_VERSION(3,0,0)
 	XXX_gtk_table_attach (XXX_GTK_TABLE (whole_table), top_table, 0, 16, 0, 1,
